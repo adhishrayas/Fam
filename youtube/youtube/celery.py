@@ -7,8 +7,10 @@ from django.conf import settings
 os.environ.setdefault('DJANGO_SETTINGS_MODULE','youtube.settings')
 app = Celery('youtube')
 app.conf.enable_utc = False
-app.conf.update(timezone = 'Asia/Kolkata')
+app.conf.update(timezone = 'Asia/Kolkata')#Set the right timezone
 app.config_from_object(settings,namespace = 'CELERY')
+
+#Schedule the task to run after every 10 seconds
 app.conf.beat_schedule = {
     "get_videos":{
         "task":'api.tasks.search_youtube',

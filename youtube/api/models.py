@@ -14,9 +14,10 @@ class YouTubeVideos(models.Model):
         return self.video_title
     
     class Meta:
-        #Adding an Index for quicker queries related to publish time
+        #Adding an Index for quicker queries
         indexes= [ 
-            models.Index(fields=['publish_time'])
+            models.Index(fields=['publish_time']),
+            models.Index(fields=['video_title']),
         ]
 
 #to keep track of the index

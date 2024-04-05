@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Latest Videos</title>
+    <style>
+        /* Reset styles */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .header {
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        .sorting-options {
+            margin-bottom: 20px;
+        }
+
+        .sorting-options label {
+            margin-right: 10px;
+        }
+
+        .sorting-options select {
+            padding: 5px;
+            border-radius: 5px;
+        }
+
+        .card {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .card-content {
+            padding: 20px;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        .card-description {
+            color: #666;
+            margin-bottom: 15px;
+        }
+
+        .card-publish-time {
+            color: #999;
+            margin-bottom: 10px;
+        }
+
+        .card-thumbnail {
+            width: 100%;
+            height: auto;
+            border-radius: 10px 10px 0 0;
+        }
+
+        .pagination {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .pagination a {
+            display: inline-block;
+            padding: 8px 16px;
+            margin: 0 5px;
+            background-color: #007bff;
+            color: #fff;
+            border-radius: 5px;
+            text-decoration: none;
+        }
+
+        .pagination a:hover {
+            background-color: #0056b3;
+        }
+
+        .pagination .current {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Latest Videos</h1>
+            <a href ="{% url 'search' %}">Search By Title</a>
+            <div class="sorting-options">
+                <label for="sort">Sort By:</label>
+                <select name="sort" id="sort" onchange="handleSort()">
+                    <option value="video_title">Title:- Ascending</option>
+                    <option value="video_titledes">Title:- Descending</option>
+                    <option value="publish_timeasc">Publish Time:-Ascending</option>
+                    <option value="publish_time">Publish Time:-Descending</option>
+                    <!-- Add more options if needed -->
+                </select>
+            </div>
+        </div>
+
+        <div class="search-form">
+            <form action="{% url 'home' %}" method="GET">
+                <input type="datetime-local" name="start_datetime" placeholder="Start Date and Time" value="{{ request.GET.start_datetime }}">
+                <input type="datetime-local" name="end_datetime" placeholder="End Date and Time" value="{{ request.GET.end_datetime }}">
+                <input type="submit" value="Search">
+            </form>
+        </div>
+
+        {% for item in page_obj %}
+            <div class="card">
+                <img class="card-thumbnail" src="{{ item.thumbnail_url }}" alt="Thumbnail">
+                <div class="card-content">
+                    <h2 class="card-title">{{ item.video_title }}</h2>
+                    <p class="card-description">{{ item.description }}</p>
+                    <p class="card-publish-time"><strong>Publish Time:</strong> {{ item.publish_time }}</p>
+                    <p><strong>Channel:</strong> {{ item.channel_title }}</p>
+                </div>
+            </div>
+        {% endfor %}
+
+        <!-- Pagination links -->
+        <div class="pagination">
+            <span class="step-links">
+                {% if page_obj.has_previous %}
+                    <a href="?page=1{% if request.GET.ar %}&ar={{ request.GET.ar }}{% endif %}">&laquo; First</a>
+                    <a href="?page={{ page_obj.previous_page_number }}{% if request.GET.ar %}&ar={{ request.GET.ar }}{% endif %}">Previous</a>
+                {% endif %}
+
+                <span class="current">
+                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+                </span>
+
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}{% if request.GET.ar %}&ar={{ request.GET.ar }}{% endif %}">Next</a>
+                    <a href="?page={{ page_obj.paginator.num_pages }}{% if request.GET.ar %}&ar={{ request.GET.ar }}{% endif %}">Last &raquo;</a>
+                {% endif %}
+            </span>
+        </div>
+    </div>
+    <script>
+        function handleSort() {
+            var sortOption = document.getElementById("sort").value;
+            var baseUrl = window.location.href.split('?')[0]; // Get the base URL
+            var queryParams = window.location.search; // Get existing query parameters
+            var newUrl = baseUrl + queryParams; // Construct new URL with existing query parameters
+            // Remove the 'ar' parameter from the query string if it exists
+            var urlParams = new URLSearchParams(queryParams);
+            if (urlParams.has('ar')) {
+                urlParams.delete('ar');
+            }
+    
+            // Add the new 'sort' parameter to the query string
+            urlParams.append('ar', sortOption);
+    
+            // Construct the final URL with updated query parameters
+            newUrl = baseUrl + '?' + urlParams.toString();
+    
+            // Redirect to the new URL
+            window.location.href = newUrl;
+        }
+        window.onload = function() {
+            var urlParams = new URLSearchParams(window.location.search);
+            var selectedOption = urlParams.get('ar');
+            if (selectedOption) {
+                document.getElementById("sort").value = selectedOption;
+            }
+        };
+    </script>
+</body>
+</html>

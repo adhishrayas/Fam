@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Videos</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        h1 {
+            font-size: 24px;
+            color: #333;
+        }
+        .details {
+            margin-top: 20px;
+        }
+        .detail {
+            margin-bottom: 10px;
+        }
+        .detail label {
+            font-weight: bold;
+        }
+        .detail p {
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    <a href = "{% url 'home' %}">Return </a>
+    <form id="searchForm" action="{% url 'home' %}" method="post">
+        {% csrf_token %}
+        <input id="searchInput" type="text" name="query" placeholder="Search...">
+        <button type="submit">Search</button>
+    </form>
+    <script>
+        // Function to perform search dynamically as the user types
+        document.getElementById("searchInput").addEventListener("input", function(event) {
+            const query = event.target.value.trim(); // Get the search query
+            
+            if (query) {
+                // Send a POST request to the server to perform the search
+                fetch(window.location.href, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded",
+                        "X-CSRFToken": "{{ csrf_token }}" // Include CSRF token
+                    },
+                    body: new URLSearchParams({
+                        q: query
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data)
+                    const searchResults = document.getElementById("searchResults");
+                    if (searchResults) {
+                        searchResults.innerHTML = ""; // Clear previous search results
+                        
+                        // Display search results
+                        if (data.videos && data.videos.length > 0) {
+                            data.videos.forEach(video => {
+                                const VideoCard = document.createElement("div");
+                                VideoCard.classList.add("video-card");
+                                VideoCard.innerHTML = `
+                                    <img class="card-thumbnail" src="{{ item.thumbnail_url }}" alt="Thumbnail">
+                                    <h2>${video.video_title}</h2>
+                                    <p>Description: ${video.description}</p>
+                                    <p>Publish Time: ${video.publish_time}</p>
+                                    <p>Channel : ${video.channel_title}</p>
+                                `;
+                                searchResults.appendChild(VideoCard);
+                            });
+                        } else {
+                            searchResults.innerHTML = "<p>No results found</p>";
+                        }
+                    } else {
+                        console.error("Element with ID 'searchResults' not found.");
+                    }
+                })
+                .catch(error => {
+                    console.error("Error performing search:", error);
+                });
+            } else {
+                // Clear search results if the search query is empty
+                document.getElementById("searchResults").innerHTML = "";
+            }
+        });
+
+    </script>
+</body>
+
+<div id ="searchResults" class="video-card">
+</div>
+
+</html>

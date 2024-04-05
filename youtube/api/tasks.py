@@ -25,6 +25,7 @@ def next_key():
 
 
 
+#Test function
 @shared_task(bind = True)
 def test_func(self):
     for i in range(10):
@@ -32,11 +33,14 @@ def test_func(self):
     return "Done"
 
 
-
+#Generic function to create video objects in db
 @transaction.atomic
 def create_youtube_videos(video_data):
+    existing_video_ids = YouTubeVideos.objects.values_list('video_id', flat=True)
+    new_video_data = [data for data in video_data if data['video_id'] not in existing_video_ids] #Ensures that no video is repeated in db
+    
     YouTubeVideos.objects.bulk_create([
-        YouTubeVideos(**data) for data in video_data
+        YouTubeVideos(**data) for data in new_video_data
     ])
 
 #main function
@@ -73,4 +77,4 @@ def search_youtube(*args, **kwargs):
            print("haha")
            return "hehe"
     except:
-        next_key()
+        next_key() #Go to the next key if current key is exhausted
