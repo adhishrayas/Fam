@@ -62,7 +62,7 @@ The second terminal will have the celery worker printing "haha" and "hehe", deno
 
 Whereas the first terminal should show you the server running.
 
-Now open your local server(Usually:- http://127.0.0.1:8000/) to see the Latest Football related Videos!
+Now open your local server(Usually:- http://127.0.0.1:8000/) to see the Latest Football related Videos! Refresh the page every 10 seconds or so to get the updated videos.
 
 To take a better look at the stored data and the task data, you can go to http://127.0.0.1:8000/admin and log in with your superuser credentials.
 
