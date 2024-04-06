@@ -9,7 +9,9 @@ Open this Repo in your IDE and install a virtualenv using the command of your ch
 ```bash
 virtualenv foo
 ```
-Then Open the main directory and you should see "requirements.txt" and "manage.py", run the below command to install all the necessary packages.
+
+Then in your terminal,go the newly created virtualenv folder, go to scripts, and type in activate to activate the virtualenv.
+Then go to the main directory and you should see "requirements.txt" and "manage.py", run the below command to install all the necessary packages.
 
 ```bash
 pip install -r requirements.txt
@@ -45,7 +47,7 @@ python manage.py runserver
 
 In the second terminal, run the below command to start the celery worker:-  
 ```bash
-celery -A youtube.celery worker --pool=solo -l -INFO
+celery -A youtube.celery worker --pool=solo -l INFO
 ```
 
 In the last terminal, run the below command to start the celery scheduled job.
