@@ -3,7 +3,7 @@
 Task to fetch Youtube videos on football asynchronously every 10 seconds, save them in the DB,and display them on a dashboard.
 
 ## Installation
-Ensure that your machine has Python installed.
+Ensure that your machine has Python installed and has a strong internet connection.
 
 Open this Repo in your IDE and install a virtualenv using the command of your choice, I used the one below
 ```bash
