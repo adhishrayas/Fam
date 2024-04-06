@@ -20,7 +20,8 @@ After this is done, install redis on your machine from [here](https://github.com
 
 After downloading it, open the downloaded file and follow the instructions to install.
 
-Lastly, make database migrations by using these 2 commands:-  
+
+Lastly, make database migrations by using these 2 commands in the first terminal:-  
 ```bash
 python manage.py makemigrations
 ```
